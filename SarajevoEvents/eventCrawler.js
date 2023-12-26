@@ -13,62 +13,59 @@ const FileSystem = require('fs');
       console.log("elements:",elements.length)
         for (let i = 0; i < elements.length; i++) {
             try{
-            let events = {};
-            console.log('line 16')
-            if(i!==0){
-                const elementsPostRefresh = await driver.findElements(By.className('Event_singleEvent__KOwmb'))
-                let counter = 0
-                while(elements.length!==elementsPostRefresh.length || counter<10000){
-                    counter++
+                let events = {};
+
+                let elementsPostRefresh = []
+                if(i!==0){
+                    elementsPostRefresh = await driver.findElements(By.className('Event_singleEvent__KOwmb'))
+                    let counter = 0
+                    while (elements.length !== elementsPostRefresh.length && counter < 10000) {
+                        counter++;
+                    }
+                    elements = elementsPostRefresh
                 }
 
-            }
-            console.log('line 26') 
-            const titleElement = await elements[i].findElement(By.className('Event_selectedEventText__tLPSX'));
-            
-            const title = await titleElement.getText();
-            
-            events = { ...events, title };
+                const titleElement = await elements[i].findElement(By.className('Event_selectedEventText__tLPSX'));
+                const title = await titleElement.getText();
+                events = { ...events, title };
+                driver.executeScript("arguments[0].scrollIntoView(true);", titleElement)
 
-            const imageElement = await elements[i].findElement(By.css('img'));
-            const srcValue = await imageElement.getAttribute('src');
-            events = { ...events, image: [srcValue] };
-            console.log("line 27")
-            const locationElement = await elements[i].findElement(By.className('Event_single-event-location-name___E_K8'))
-            const locationValue = await locationElement.getText();
-            events = {...events, locationValue}
-            
-            const timeElement = await elements[i].findElement(By.className('Event_single-event-time__NrhNZ'))
-            const timeValue = await timeElement.getText();
-            events = {...events,timeValue}
-            console.log("line 35")
+                const imageElement = await elements[i].findElement(By.css('img'));
+                const srcValue = await imageElement.getAttribute('src');
+                events = { ...events, image: [srcValue] };
 
-            elements[i].click()
-            await driver.sleep(2000)
-            
-            await driver.wait(until.elementLocated(By.className('Event_modal-information-price__qzKsX css-1ngehnn')), 5000);
-            
-            const priceElement = await driver.findElement(By.className('Event_modal-information-price__qzKsX css-1ngehnn'))
-            const priceValue = await priceElement.getText();
-            console.log("line 44")
-            events = {...events,priceValue}
-             const descriptionElement = await driver.findElement(By.className('chakra-text Event_modal-body-text__jHthh css-0'))
-            const descriptionValue = await descriptionElement.getText();
-            
-            events = {...events,descriptionValue}
-             console.log('price',priceValue)
-             console.log('desc',descriptionValue)
-             console.log("line 52")
-             
-             
-            
-             const back = await driver.findElement(By.className('Event_modal-close-button__uDSCF css-1a8mfs8')).click()
-            list.push(events);
-            console.log('58',list)
-            await driver.sleep(10000)
-            
-        }catch(error){
+                const locationElement = await elements[i].findElement(By.className('Event_single-event-location-name___E_K8'))
+                const locationValue = await locationElement.getText();
+                events = {...events, locationValue}
                 
+                const timeElement = await elements[i].findElement(By.className('Event_single-event-time__NrhNZ'))
+                const timeValue = await timeElement.getText();
+                events = {...events,timeValue}
+
+                elements[i].click()
+                await driver.sleep(2000)
+                
+                await driver.wait(until.elementLocated(By.className('Event_modal-information-price__qzKsX css-1ngehnn')), 5000);
+                
+                const priceElement = await driver.findElement(By.className('Event_modal-information-price__qzKsX css-1ngehnn'))
+                const priceValue = await priceElement.getText();
+                console.log("line 44")
+                events = {...events,priceValue}
+                const descriptionElement = await driver.findElement(By.className('chakra-text Event_modal-body-text__jHthh css-0'))
+                const descriptionValue = await descriptionElement.getText();
+                
+                events = {...events,descriptionValue}
+                console.log('price',priceValue)
+                console.log('desc',descriptionValue)
+                console.log("line 52")
+                
+                
+                
+                const back = await driver.findElement(By.className('Event_modal-close-button__uDSCF css-1a8mfs8')).click()
+                list.push(events);
+                await driver.sleep(1500)
+            
+            }catch(error){     
                 console.log(i)
                 throw error;
             }

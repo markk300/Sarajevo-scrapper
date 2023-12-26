@@ -4,6 +4,7 @@
   "description": "crawler",
   "main": "index.js",
   "scripts": {
+    "start": "node SarajevoEvents/eventCrawler.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
