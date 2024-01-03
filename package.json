@@ -12,6 +12,7 @@
   "dependencies": {
     "chromedriver": "^119.0.1",
     "jest": "^29.7.0",
+    "node-fetch": "^3.3.2",
     "selenium-webdriver": "^4.15.0"
   }
 }
