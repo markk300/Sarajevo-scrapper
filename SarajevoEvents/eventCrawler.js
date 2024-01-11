@@ -11,14 +11,28 @@ const FileSystem = require('fs');
     try {
         await driver.get('https://www.sarajevoin.ba/event');
         let elements = await driver.findElements(By.className('Event_singleEvent__KOwmb'));
-      
+        
       console.log("elements:",elements.length)
         for (let i = 0; i < elements.length; i++) {
             
                 let events = {};
+                const currentDate = new Date();
+                let dayOfMonth = currentDate.getDate();
+               
+                await driver.findElement(By.xpath(`//*[@id="__next"]/div/div[3]/div[1]/div/div[2]/div/div/div/div[2]/button[${dayOfMonth}]`)).click()
+                if(i == elements.length - 1){
+                  console.log('Skipping Day',dayOfMonth)
+                  dayOfMonth++;
+                  await driver.findElement(By.xpath(`//*[@id="__next"]/div/div[3]/div[1]/div/div[2]/div/div/div/div[2]/button[${dayOfMonth}]`)).click()
+                  console.log(dayOfMonth)
+                  i=0
+                }
+                const dateElement = await driver.findElement(By.xpath('//*[@id="__next"]/div/div[3]/div[2]/div/div[1]/h2'))
+                const date = await dateElement.getText();
+                events = {...events, date}
 
-                
                 elements = await driver.findElements(By.className('Event_singleEvent__KOwmb'));
+                
                 const titleElement = await elements[i].findElement(By.className('Event_selectedEventText__tLPSX'));
                 const title = await titleElement.getText();
                 events = { ...events, title };
